@@ -151,6 +151,42 @@ if(!association.found){
     }
   }
 
+
+  async updateAssociateDocs(associationUser, legalDocument) {
+    try {
+      // Ensure the legalDocument is valid
+      if (!legalDocument || legalDocument.length === 0) {
+        const error = new Error('Legal document cannot be empty');
+        error.statusCode = 400; // Bad Request
+        throw error;
+      }
+  
+      // Update the legalDocument for the associationUser
+      const updatedUser = await AssociationUser.findByIdAndUpdate(
+        associationUser._id,
+        { legalDocument,
+          isValid: true 
+         },
+        { new: true } 
+      );
+  
+      if (!updatedUser) {
+        const error = new Error('Association user not found');
+        error.statusCode = 404; // Not Found
+        throw error;
+      }
+  
+      return updatedUser; // Return the updated document
+  
+    } catch (error) {
+      // If an error occurs, make sure we set the status code correctly
+      if (!error.statusCode) {
+        error.statusCode = 500; // Internal Server Error by default
+      }
+      throw error; // Re-throw the error to be caught by the global error handler
+    }
+  }
+  
   async registerAssociationUser(
     email,
     password,
@@ -158,7 +194,7 @@ if(!association.found){
     name,
     locations,
     CIB,
-    legalDocument
+
   ) {
     try {
       if (!Array.isArray(locations)) {
@@ -186,12 +222,12 @@ if(!association.found){
         name,
         locations,
         CIB,
-        legalDocument,
+       
         specialToken: randomgenerated
       });
       
       await associationUser.save();
-      return{name:name, email:email};
+      return{name:name, email:email,user:associationUser};
     } catch (error) {
       if (!error.statusCode) {
         error.statusCode = 500;

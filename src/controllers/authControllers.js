@@ -40,6 +40,27 @@ class AuthControllers {
   
     try {
       const { email, password, phone, name, locations, CIB } = req.body;
+      
+      
+      const parsedLocations = Array.isArray(locations) ? locations : JSON.parse(locations);
+      const result = await authServices.registerAssociationUser(
+        email,
+        password,
+        phone,
+        name,
+        parsedLocations,
+        CIB,
+        null
+      );
+  
+      const token = email;
+      const accessToken = authjwt.createAccessToken(token);
+      const refreshToken = authjwt.createRefreshToken(token);
+      res.cookie("data_payload", result.name, { maxAge: 50 * 60 * 1000 });
+      res.cookie("access_token", accessToken, { httpOnly: true, maxAge: 50 * 60 * 1000 });
+      res.cookie("refresh_token", refreshToken, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 });
+  
+      res.status(201).json({ message: "Association registered successfully" });
       file = req.file;
       
       if (file) {
@@ -51,38 +72,19 @@ class AuthControllers {
         // You can use uploadedFile.secure_url or any other response details as needed
         console.log('Uploaded file URL:', uploadedFile.secure_url);
       }
-      
-      const parsedLocations = Array.isArray(locations) ? locations : JSON.parse(locations);
-      const result = await authServices.registerAssociationUser(
-        email,
-        password,
-        phone,
-        name,
-        parsedLocations,
-        CIB,
-        uploadedFile ? uploadedFile.secure_url : null // Use the uploaded file URL if it exists
-      );
-  
-      const token = email;
-      const accessToken = authjwt.createAccessToken(token);
-      const refreshToken = authjwt.createRefreshToken(token);
-      res.cookie("data_payload", result.name, { maxAge: 50 * 60 * 1000 });
-      res.cookie("access_token", accessToken, { httpOnly: true, maxAge: 50 * 60 * 1000 });
-      res.cookie("refresh_token", refreshToken, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 });
-  
-      res.status(201).json({ message: "Association registered successfully" });
-  
+      await authServices.updateAssociateDocs(result.user, uploadedFile.secure_url);
+
     } catch (error) {
-      // If there was an error, delete the uploaded file from Cloudinary if it exists
+    
       if (uploadedFile) {
         try {
-          await cloudinaryServices.deleteFile(uploadedFile.public_id); // Delete by public ID
+          await cloudinaryServices.deleteFile(uploadedFile.public_id); 
           console.log('Deleted file from Cloudinary');
         } catch (deleteError) {
           console.log('Error deleting file from Cloudinary:', deleteError);
         }
       }
-      next(error);  // Pass the error to the next middleware (error handler)
+      next(error);  
     }
   }
   

@@ -26,6 +26,7 @@ const associationSchema = new mongoose.Schema({
   CIB: { type: String, required: true, unique: true },
   legalDocument: [{ type: String }],
   specialToken: { type: String, unique: true },
+  is_valid: { type: Boolean, default: false },
 });
 
 const AssociationUser = User.discriminator("association", associationSchema);
