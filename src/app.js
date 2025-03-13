@@ -9,7 +9,12 @@ const cors = require('cors');
 const app = express();
 
 // CORS setup first
-app.use(cors());
+app.use(cors({
+    origin: "*",
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+    allowedHeaders: ["Content-Type", "Authorization"]
+}));
+
 app.options('*', cors()); // Enable pre-flight for all routes
 
 // Body parsers next
