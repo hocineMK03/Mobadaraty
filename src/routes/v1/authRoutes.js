@@ -20,6 +20,9 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 router.post("/login", authcontrollers.handleLogin);
+router.get("/lo", (req, res) => {
+  res.send("Hello World!");
+});
 
 router.post(
   "/association/register",
