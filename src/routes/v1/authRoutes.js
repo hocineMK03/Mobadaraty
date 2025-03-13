@@ -23,7 +23,9 @@ router.post("/login", authcontrollers.handleLogin);
 router.get("/lo", (req, res) => {
   res.send("Hello World!");
 });
-
+router.post("/lo1", (req, res) => {
+  res.send("Hello World!");
+});
 router.post(
   "/association/register",
   upload.single("legalDocuments"),
