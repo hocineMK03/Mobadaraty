@@ -21,7 +21,7 @@ class AuthJWT {
     const token = jwt.sign(
       { inviteeEmail, inviterEmail, specialToken },
       config.accessTokenJWT,
-      { expiresIn: "10h" }
+      { expiresIn: "2h" }
     );
     return token;
   };

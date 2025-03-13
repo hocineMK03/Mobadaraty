@@ -46,6 +46,7 @@ const volunteerSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "AssociationUser",
   },
+  points: { type: Number, default: 0 },
 });
 volunteerSchema.post("save", function (error, doc, next) {
   if (error.name === "MongoServerError" && error.code === 11000) {
