@@ -108,14 +108,23 @@ class AuthControllers {
         location,
       } = req.body;
    
-      
-      const invitationData = req.invitationData;
-      const {
-        inviteeEmail,
-        inviterEmail,
-        specialToken1
+      const invitationServices = require("../services/invitationServices");
+      let inviterEmail = null;
+      let specialToken1 = null;
+  
+      // 🟢 Only extract invitation data for "association_member"
+      if (volunteerType === "association_member") {
+        const invitationData = req.invitationData;
+        inviterEmail = invitationData.inviterEmail;
+        specialToken1 = invitationData.specialToken1;
+  
+        // 🟢 Validate invitation
+        await invitationServices.checkInvValidity(email, inviterEmail, specialToken1);
       }
-      = invitationData;
+
+      if(volunteerType==="association_member"){
+        await invitationServices.checkInvValidity(email, inviterEmail, specialToken1);
+      }
       const result=await authServices.registerVolunteerUser(
         email,
         password,
@@ -153,10 +162,11 @@ class AuthControllers {
     if(volunteerType==="association_member"){
       
 
-      const invitationServices = require("../services/invitationServices");
+      
       await invitationServices.acceptInvite(inviteeEmail, inviterEmail);
     }
     } catch (error) {
+      console.error(error)
       next(error);
     }
   }

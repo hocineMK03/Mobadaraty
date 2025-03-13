@@ -1,28 +1,12 @@
-const {mongoose} = require("../config/db");
+const { mongoose } = require("../config/db");
 
 const checkInSchema = new mongoose.Schema({
-  volunteerId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "VolunteerUser",
-    required: true,
-  },
-  associationId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "AssociationUser",
-    required: true,
-  },
-  scannedBy: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User", // Scanner Account
-  },
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+  associationId: { type: mongoose.Schema.Types.ObjectId, ref: "Association", required: true },
   checkInTime: { type: Date, default: Date.now },
-  checkOutTime: { type: Date, default: null },
-  status: { type: String, enum: ["checked-in", "checked-out"], default: "checked-in" },
-  location: {
-    coordinates: { type: [Number], required: false }, // [longitude, latitude]
-    address: { type: String, required: false },
-  },
+  checkOutTime: { type: Date, default: null }, // Null until user checks out
 });
 
 const CheckIn = mongoose.model("CheckIn", checkInSchema);
-module.exports = {CheckIn};
+
+module.exports = { CheckIn };

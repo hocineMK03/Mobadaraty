@@ -64,7 +64,7 @@ async sendInvite(email,theEmail){
     }
 }
 
-async acceptInvite(email, theEmail) {
+async acceptInvite(email, theEmail, specialToken) {
     try {
         const authServices = require('./authServices');
         const findUser = await authServices.findUserByEmailAndPhone(theEmail, null);
@@ -78,7 +78,9 @@ async acceptInvite(email, theEmail) {
         // Check if the invitation exists before updating
         const findInv = await Invitation.updateOne(
             { email: email, invitedBy: findUser.data._id },
-            { $set: { status: 'accepted' } }
+            { $set: { status: 'accepted',
+                        specialToken: specialToken
+             } }
         );
 
         console.log(findUser.data._id)
@@ -101,6 +103,31 @@ async acceptInvite(email, theEmail) {
             error.statusCode = 500;
         }
         throw error;
+    }
+}
+async checkInvValidity(email, theEmail, specialToken) {
+    try {
+        const authServices = require("./authServices");
+        const findUser = await authServices.findUserByEmailAndPhone(theEmail, null);
+        
+        if (!findUser.found) {
+            throw this.handleError(new Error("User not found"), 404);
+        }
+
+        // Find invitation with matching email, inviter, and special token
+        const findInv = await Invitation.findOne({
+            email: email,
+            invitedBy: findUser.data._id,
+            specialToken: specialToken
+        });
+
+        if (!findInv) {
+            throw this.handleError(new Error("Invalid or expired invite"), 400);
+        }
+
+        return { message: "Invite is valid" };
+    } catch (error) {
+        throw this.handleError(error);
     }
 }
 

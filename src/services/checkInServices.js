@@ -1,41 +1,57 @@
+const { CheckIn } = require("../models/CheckIn");
 
-const {CheckIn} = require('../models/CheckIn')
+class CheckInServices {
+  async scanQRCode(volunteerID, associationID) {
+    const now = new Date();
+    const today = now.toISOString().split("T")[0];
 
-class CheckInServices{
-
-
-    async scanQRCode(volunteerID,associationID){
-try{
-    let checkIn = await CheckIn.findOne({
-        volunteerId: volunteerID,
+    // Find the last check-in for today
+    const lastCheckIn = await CheckIn.findOne({
+        userId: volunteerID,
         associationId: associationID,
-        checkOutTime: null, // No check-out means they are still checked in
+        checkInTime: {
+            $gte: new Date(today),
+            $lt: new Date(new Date(today).setDate(new Date(today).getDate() + 1)),
+        }
+    }).sort({ checkInTime: -1 });
+
+    
+    if (lastCheckIn && !lastCheckIn.checkOutTime) {
+        lastCheckIn.checkOutTime = now;
+        await lastCheckIn.save();
+
+        // give him poinrs
+        const authservices = require("./authServices");
+        await authservices.awardDonorPoints(volunteerID, 10);
+        return { message: "Check-out successful!", checkOutTime: now };
+    }
+
+   
+    const checkInsToday = await CheckIn.countDocuments({
+        userId: volunteerID,
+        associationId: associationID,
+        checkInTime: { $gte: new Date(today), $lt: new Date(new Date(today).setDate(new Date(today).getDate() + 1)) }
     });
 
-    if (!checkIn) {
-        // No existing check-in found, create a new check-in
-        checkIn = new CheckIn({
-            volunteerId: volunteerID,
-        associationId: associationID,
-            checkInTime: new Date(),
-        });
-        await checkIn.save();
-        return { message: "Check-in successful" };
-    } else {
-        // Existing check-in found, update with check-out time
-        checkIn.checkOutTime = new Date();
-        await checkIn.save();
-        return { message: "Check-out successful" };
-    }
-}
-catch(error){
-    if (!error.statusCode) {
-        error.statusCode = 500;
-      }
-      throw error;
-}
+    if (checkInsToday >= 2) {
+        throw new Error("Max 2 check-ins per day allowed for this association.");
     }
 
+  
+    if (lastCheckIn) {
+        const diffHours = (now - lastCheckIn.checkInTime) / (1000 * 60 * 60);
+        if (diffHours < 6) {
+            throw new Error("You must wait at least 6 hours between check-ins.");
+        }
+    }
+
+   
+    const newCheckIn = new CheckIn({ userId:volunteerID, associationId:associationID });
+    await newCheckIn.save();
+
+    return { message: "Check-in successful!", checkInTime: now };
+
+}
 }
 
-module.exports = new CheckInServices
+module.exports = new CheckInServices();

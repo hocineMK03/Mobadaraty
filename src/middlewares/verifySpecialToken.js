@@ -3,8 +3,10 @@ const config = require("../config/config");
 
 const verifySpecialToken = (req, res, next) => {
   try {
-    const { specialToken, email } = req.body; // Extract values
-
+    const { specialToken, email,volunteerType } = req.body; // Extract values
+    if (volunteerType === "independent") {
+      return next();
+    }
     if (!specialToken) {
       return res.status(400).json({ message: "Missing special token" });
     }

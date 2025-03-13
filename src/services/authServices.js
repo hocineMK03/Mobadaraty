@@ -150,6 +150,8 @@ if(!association.found){
 
       return{fullName:fullName, email:email};
     } catch (error) {
+
+      console.error(error)
       if (!error.statusCode) {
         error.statusCode = 500;
       }
