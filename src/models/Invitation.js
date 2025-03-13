@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const {mongoose} = require("../config/db");
 
 const invitationSchema = new mongoose.Schema({
     invitedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true }, // Who sent it?

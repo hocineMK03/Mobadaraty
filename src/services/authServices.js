@@ -29,6 +29,21 @@ class AuthServices {
     }
   }
   
+  async findAssociationByAssociationID(associationID) {
+    try {
+      const association = await AssociationUser.findById(associationID).exec();
+      if (!association) {
+        return { found: false, data: null };
+      }
+      return { found: true, data: association };
+    }
+    catch (error) {
+      if (!error.statusCode) {
+        error.statusCode = 500;
+      }
+      throw error;
+    }
+  }
   
   async findAssociationBySpecialToken(specialToken) {
     try{

@@ -27,7 +27,7 @@ class AuthControllers {
 
       res.status(200).json({ message: "Logged in successfully" });
       
-
+        
     } catch (error) {
       next(error);
     }

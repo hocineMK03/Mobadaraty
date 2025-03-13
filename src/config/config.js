@@ -6,7 +6,8 @@ const config={
     refreshTokenJWT:process.env.REFRESH_JWT_SECRET || "",
     smtpGmail:process.env.SMTP_GMAIL || "",
     smtpAppPassword:process.env.SMTP_APP_PASSWORD || "",
-    frontendURL:process.env.FRONTEND_URL || ""
+    frontendURL:process.env.FRONTEND_URL || "",
+    firebaseServerKey:process.env.FIREBASE_SERVER_KEY || "",
 }
 
 module.exports=config;
