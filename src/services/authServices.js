@@ -160,6 +160,8 @@ if(!association.found){
       }
 
       const hashedPassword = await passwordutils.hashPassword(password);
+
+      const randomgenerated="random"+name+"generated";
       const associationUser = new AssociationUser({
         email,
         password: hashedPassword,
@@ -168,7 +170,7 @@ if(!association.found){
         locations,
         CIB,
         legalDocument,
-        specialToken: "random generated",
+        specialToken: randomgenerated
       });
       //specialToken is used as teh hash for the association when sending invites to volunteers
       await associationUser.save();

@@ -8,6 +8,9 @@ const config={
     smtpAppPassword:process.env.SMTP_APP_PASSWORD || "",
     frontendURL:process.env.FRONTEND_URL || "",
     firebaseServerKey:process.env.FIREBASE_SERVER_KEY || "",
+    cloudinaryCloudName:process.env.CLOUDINARY_CLOUD_NAME || "",
+    cloudinaryApiKey:process.env.CLOUDINARY_API_KEY || "",
+    cloudinaryApiSecret:process.env.CLOUDINARY_API_SECRET || "",
 }
 
 module.exports=config;
