@@ -7,7 +7,7 @@ const cookieParser = require("cookie-parser");
 const cors = require('cors');
 
 const app = express();
-
+app.use(express.json());
 // CORS setup first
 app.use(cors({
     origin: "*",
@@ -18,7 +18,7 @@ app.use(cors({
 app.options('*', cors()); // Enable pre-flight for all routes
 
 // Body parsers next
-app.use(express.json());
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 
