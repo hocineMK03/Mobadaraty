@@ -20,16 +20,11 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 router.post("/login", authcontrollers.handleLogin);
-router.get("/lo", (req, res) => {
-  res.send("Hello World!");
+router.post("/association/register", upload.single("legalDocuments"), async (req, res) => {
+  const start = Date.now();
+  await authcontrollers.handleAssociationRegister(req, res);
+  console.log(`Request took ${Date.now() - start} ms`);
 });
-router.post("/lo1", (req, res) => {
-  res.send("Hello World!");
-});
-router.post(
-  "/association/register",
-  upload.single("legalDocuments"),
-  authcontrollers.handleAssociationRegister
-);
+
 router.post("/volunteer/register",verifySpecialToken, authcontrollers.handleVolunteernRegister);
 module.exports = router;
