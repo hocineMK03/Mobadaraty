@@ -172,7 +172,7 @@ if(!association.found){
         legalDocument,
         specialToken: randomgenerated
       });
-      //specialToken is used as teh hash for the association when sending invites to volunteers
+      
       await associationUser.save();
       return{name:name, email:email};
     } catch (error) {

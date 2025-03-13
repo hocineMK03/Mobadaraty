@@ -8,8 +8,8 @@ class CloudinaryServices {
       // Upload the file stream to Cloudinary
       const uploadStream = cloudinary.uploader.upload_stream(
         {
-          resource_type: "auto", // Automatically detect the file type (PDF, image, etc.)
-          folder: "Mobadarat", // The folder where you want to store the file in Cloudinary
+          resource_type: "auto",
+          folder: "Mobadarat", 
         },
         (error, result) => {
           if (error) {
