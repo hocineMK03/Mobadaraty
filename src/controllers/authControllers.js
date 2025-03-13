@@ -39,10 +39,13 @@ class AuthControllers {
     let uploadedFile = null;  // Declare a variable to store the uploaded file details
   
     try {
-      const { email, password, phone, name, locations, CIB } = req.body;
+      const { email, password, phone, name, locations, CIB,local_location } = req.body;
       
       
       const parsedLocations = Array.isArray(locations) ? locations : JSON.parse(locations);
+      const parsedLocalLocation = Array.isArray(local_location) ? local_location : JSON.parse(local_location);
+
+      
       const result = await authServices.registerAssociationUser(
         email,
         password,
@@ -50,7 +53,8 @@ class AuthControllers {
         name,
         parsedLocations,
         CIB,
-        null
+        
+        parsedLocalLocation
       );
   
       const token = email;
@@ -101,9 +105,10 @@ class AuthControllers {
         skills,
         availability,
         volunteerType,
-        specialToken,
+        location,
       } = req.body;
-
+   
+      
       const invitationData = req.invitationData;
       const {
         inviteeEmail,
@@ -121,7 +126,8 @@ class AuthControllers {
         skills,
         availability,
         volunteerType,
-        specialToken1
+        specialToken1,
+        location
       )
 
       

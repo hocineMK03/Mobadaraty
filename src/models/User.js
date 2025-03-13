@@ -22,7 +22,11 @@ const associationSchema = new mongoose.Schema({
       city: { type: String }, 
     },
   ],
-
+  local_location: {
+    coordinates: { type: [Number], required: true },
+    address: { type: String },
+    city: { type: String}
+  },
   CIB: { type: String, required: true, unique: true },
   legalDocument: [{ type: String }],
   specialToken: { type: String, unique: true },
@@ -37,6 +41,11 @@ const volunteerSchema = new mongoose.Schema({
   nationalCardNumber: { type: String, required: true, unique: true },
   skills: [{ type: String }],
   qrCode: { type: String },
+  location: {
+    coordinates: { type: [Number], required: true },
+    address: { type: String },
+    city: { type: String },
+  },
   availability: [{ type: String, enum: ["morning", "afternoon", "evening"] }],
   volunteerType: {
     type: String,

@@ -89,7 +89,8 @@ class AuthServices {
     skills,
     availability,
     volunteerType,
-    specialToken
+    specialToken,
+    location
   ) {
     try {
 let association;
@@ -130,6 +131,7 @@ if(!association.found){
         availability,
         volunteerType,
         associationId: association?association.data._id:null,
+        location
        
       });
       const result=await volunteerUser.save();
@@ -165,7 +167,7 @@ if(!association.found){
       const updatedUser = await AssociationUser.findByIdAndUpdate(
         associationUser._id,
         { legalDocument,
-          isValid: true 
+          is_valid: true 
          },
         { new: true } 
       );
@@ -194,7 +196,7 @@ if(!association.found){
     name,
     locations,
     CIB,
-
+    local_location
   ) {
     try {
       if (!Array.isArray(locations)) {
@@ -222,7 +224,7 @@ if(!association.found){
         name,
         locations,
         CIB,
-       
+        local_location,
         specialToken: randomgenerated
       });
       

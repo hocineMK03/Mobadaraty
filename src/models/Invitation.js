@@ -5,7 +5,7 @@ const invitationSchema = new mongoose.Schema({
   email: { type: String, required: true }, // Who received it?
  
   status: { type: String, enum: ["pending", "accepted", "expired"], default: "pending" },
-  createdAt: { type: Date, default: Date.now, expires: "7d" }, // Auto-delete after 7 days
+  createdAt: { type: Date, default: Date.now, expires: "7d" }, 
 });
 
 const Invitation = mongoose.model("Invitation", invitationSchema);

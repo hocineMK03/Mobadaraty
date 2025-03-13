@@ -48,7 +48,15 @@ class DonationServices{
             
             const donation = new Donation(donationData);
             await donation.save();
-            const points= amount* 0.1;
+
+            let points = 0;
+           
+            if(donation.type === "money"){
+                points = Math.floor(donation.amount / 10);
+            }
+            else{
+                points = Math.floor(10 * donation.objectDetails.quantity);
+            }
 
             await authServices.awardDonorPoints(donor.data._id, points);
             return donation;
