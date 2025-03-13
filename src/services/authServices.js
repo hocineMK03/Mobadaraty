@@ -108,6 +108,8 @@ if(!association.found){
 }
 }
 
+
+
       const findUser = await this.findUserByEmailAndPhone(email,phone);
       if (findUser.found) {
         const error = new Error("Email or phone already taken");
@@ -136,13 +138,15 @@ if(!association.found){
       });
       const result=await volunteerUser.save();
    
-      // generate qrcode
-      const userID= result._id;
-      const {generateVolunteerQR}=require('../utils/generateVolunteerQR')
-      const qr=await generateVolunteerQR(String(userID))
-      console.log(qr)
-      await VolunteerUser.findByIdAndUpdate
-      (userID,{qrCode:qr})
+     if(volunteerType==="association_member"){
+       // generate qrcode
+       const userID= result._id;
+       const {generateVolunteerQR}=require('../utils/generateVolunteerQR')
+       const qr=await generateVolunteerQR(String(userID),String(association.data._id))
+       console.log(qr)
+       await VolunteerUser.findByIdAndUpdate
+       (userID,{qrCode:qr})
+     }
 
       return{fullName:fullName, email:email};
     } catch (error) {
