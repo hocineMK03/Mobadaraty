@@ -8,6 +8,23 @@ class AuthServices {
   }
   
 
+  async awardDonorPoints(donorID, points) {
+    try {
+      const donor = await VolunteerUser.findById(donorID).exec();
+      if (!donor) {
+        const error = new Error("Donor not found");
+        error.statusCode = 404;
+        throw error;
+      }
+      donor.points += points;
+      await donor.save();
+      return donor;
+    } catch (error) {
+      console.error("Error in awardDonorPoints:", error.message);
+      throw new Error(error.message || "Server error");
+    }
+  }
+
   async findUserByEmailAndPhone(email, phone) {
     try {
       const query = [];

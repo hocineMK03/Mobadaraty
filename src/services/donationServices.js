@@ -45,9 +45,12 @@ class DonationServices{
             } else {
                 throw new Error("Invalid donation type");
             }
-    
+            
             const donation = new Donation(donationData);
             await donation.save();
+            const points= amount* 0.1;
+
+            await authServices.awardDonorPoints(donor.data._id, points);
             return donation;
         } catch (error) {
             console.error("Error in createDonation:", error.message);
