@@ -429,6 +429,7 @@ if(!association.found){
             currentVolunteers: forML ? location.assignedVolunteers.length : undefined,
             coordinates: location.coordinates,
             name: forML ? undefined : association.name,
+            address: forML ? undefined : location.address,
           });
         }
       }

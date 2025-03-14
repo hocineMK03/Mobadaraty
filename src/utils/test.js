@@ -122,6 +122,43 @@ const volunteers =[
 			43.3258846,
 			2.8871717
 		]
+	},
+	{
+		"volunteerID": "67d44c6ce545e949f6120d9a",
+		"volunteerType": "independent",
+		"skills": [
+			"JavaScript",
+			"React",
+			"Node.js"
+		],
+		"coordinates": [
+			43.3258846,
+			2.8871717
+		]
+	},
+	{
+		"volunteerID": "67d44ccfe545e949f6120d9d",
+		"volunteerType": "independent",
+		"skills": [
+			"Delivery",
+			"Cooking"
+		],
+		"coordinates": [
+			43.3258846,
+			2.8871717
+		]
+	},
+	{
+		"volunteerID": "67d44d26e545e949f6120da0",
+		"volunteerType": "independent",
+		"skills": [
+			"Delivery",
+			"Cooking"
+		],
+		"coordinates": [
+			43.3258846,
+			2.8871717
+		]
 	}
 ]
 const locations = [
