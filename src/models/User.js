@@ -74,9 +74,7 @@ const volunteerSchema = new mongoose.Schema({
   assignedLocation: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "AssociationUser",
-    required: function () {
-      return this.volunteerType === "independent";
-    },
+    
   },
   
 

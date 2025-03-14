@@ -13,7 +13,7 @@ class AuthControllers {
       const token = email;
       const accessToken = authjwt.createAccessToken(token);
       const refreshToken = authjwt.createRefreshToken(token);
-      res.cookie("data_payload", result.fullName, {
+      res.cookie("data_payload", result.name, {
         maxAge: 50 * 60 * 1000,
       });
       res.cookie("access_token", accessToken, {

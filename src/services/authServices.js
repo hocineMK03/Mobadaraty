@@ -300,7 +300,7 @@ if(!association.found){
         throw error;
       }
       
-      return { fullName: findUser.data.fullName, email: findUser.data.email,userID:findUser.data._id };
+      return { fullName: findUser.data.fullName || findUser.data.name , email: findUser.data.email,userID:findUser.data._id };
     } catch (error) {
       if (!error.statusCode) {
         error.statusCode = 500;
