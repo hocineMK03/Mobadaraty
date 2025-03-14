@@ -4,7 +4,10 @@ const router = express.Router();
 
 const invitationControllers = require("../../controllers/invitationControllers");
 const verifyToken = require("../../middlewares/verifyToken");
-router.post("/sendinvite",verifyToken, invitationControllers.sendInvite);
+const verifyAssociation = require("../../middlewares/verifyAssociation");
+
+
+router.post("/sendinvite",verifyToken,verifyAssociation, invitationControllers.sendInvite);
 
 
 module.exports = router;

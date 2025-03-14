@@ -88,6 +88,8 @@ class AuthControllers {
           console.log('Error deleting file from Cloudinary:', deleteError);
         }
       }
+
+      console.log(error)
       next(error);  
     }
   }

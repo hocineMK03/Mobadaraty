@@ -35,7 +35,7 @@ const associationSchema = new mongoose.Schema({
     }
   ],
   legalDocument: [{ type: String }],
-   specialToken: { type: String, unique: true },
+  specialToken: { type: String, unique: true },
   CIB: { type: String, required: true, unique: true },
   is_valid: { type: Boolean, default: false },
 });

@@ -3,7 +3,11 @@ const express = require("express");
 const router = express.Router();
 const checkInControllers=require("../../controllers/checkInControllers");
 
-router.get("/scan/:volunteerID/:associationID", checkInControllers.handleScanQR);
+const verifyToken = require("../../middlewares/verifyToken");
+const verifyAssociation = require("../../middlewares/verifyAssociation");
+
+
+router.get("/scan/:volunteerID/:associationID",verifyToken,verifyAssociation, checkInControllers.handleScanQR);
 
 
 module.exports = router;
