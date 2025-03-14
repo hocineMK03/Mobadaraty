@@ -8,6 +8,35 @@ class AuthServices {
   }
   
 
+  async updateAssociationLocations(associationUser, locations) {
+    try{
+      if (!Array.isArray(locations)) {
+        const error = new Error("Locations must be an array");
+        error.statusCode = 400;
+        throw error;
+      }
+      const updatedUser = await AssociationUser.findByIdAndUpdate(
+        associationUser._id,
+        { locations },
+        { new: true }
+      );
+      if (!updatedUser) {
+        const error = new Error("Association user not found");
+        error.statusCode = 404;
+        throw error;
+      }
+      return updatedUser;
+
+    }
+    catch (error) {
+      console.error(error)
+      if (!error.statusCode) {
+        error.statusCode = 500;
+      }
+      throw error;
+    }
+  }
+
   async awardDonorPoints(donorID, points) {
     try {
       const donor = await VolunteerUser.findById(donorID).exec();
@@ -144,9 +173,11 @@ if(!association.found){
        const {generateVolunteerQR}=require('../utils/generateVolunteerQR')
        const qr=await generateVolunteerQR(String(userID),String(association.data._id))
        console.log(qr)
+       volunteerUser.associationId=association.data._id;
        await VolunteerUser.findByIdAndUpdate
        (userID,{qrCode:qr})
      }
+     
 
       return{fullName:fullName, email:email};
     } catch (error) {
@@ -200,16 +231,12 @@ if(!association.found){
     password,
     phone,
     name,
-    locations,
-    CIB,
-    local_location
+    
+    CIB
+    
   ) {
     try {
-      if (!Array.isArray(locations)) {
-        const error = new Error("Locations must be an array");
-        error.statusCode = 400;
-        throw error;
-      }
+      
 
       //check if email si taken
 
@@ -228,9 +255,9 @@ if(!association.found){
         password: hashedPassword,
         phone,
         name,
-        locations,
+        
         CIB,
-        local_location,
+        
         specialToken: randomgenerated
       });
       
@@ -278,6 +305,46 @@ if(!association.found){
       throw error;
     }
   }
+
+
+
+  async assignLocation(email, placeName, theEmail) {
+    try {
+      const findUser = await this.findUserByEmailAndPhone(email, null);
+      if (!findUser.found) {
+        throw Object.assign(new Error("User not found"), { statusCode: 404 });
+      }
+      if (!findUser.data.associationId) {
+        throw Object.assign(new Error("User is not an association member, thus cannot be assigned manually"), { statusCode: 400 });
+      }
+  
+      const association = await this.findUserByEmailAndPhone(theEmail, null);
+      if (!association.found) {
+        throw Object.assign(new Error("Association not found"), { statusCode: 404 });
+      }
+  
+      const location = association.data.locations.find(loc => loc.placeName === placeName);
+      if (!location) {
+        throw Object.assign(new Error("Location not found"), { statusCode: 404 });
+      }
+
+      if (location.assignedVolunteers.includes(findUser.data._id)) {
+        throw Object.assign(new Error("User is already assigned to this location"), { statusCode: 400 });
+      }
+  
+     
+      location.assignedVolunteers.push(findUser.data._id);
+      await AssociationUser.findByIdAndUpdate(association.data._id, { locations: association.data.locations });
+  
+      return { success: true, message: "Volunteer assigned successfully!" };
+    } catch (error) {
+      if (!error.statusCode) {
+        error.statusCode = 500;
+      }
+      throw error;
+    }
+  }
+  
 }
 
 module.exports = new AuthServices;

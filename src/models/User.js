@@ -17,14 +17,16 @@ const associationSchema = new mongoose.Schema({
   name: { type: String, required: true },
   locations: [
     {
-      placeName: { type: String, required: true },
+      _id: { type: mongoose.Schema.Types.ObjectId, auto: true },
+      address: { type: String, required: true,unique:true },
       coordinates: { type: [Number], required: true }, 
-      city: { type: String },
+     
       requiredVolunteers: { type: Number }, 
       assignedVolunteers: [{ type: mongoose.Schema.Types.ObjectId, ref: "VolunteerUser" }], 
       skills: [{ type: String }],
       tasks: [
         {
+          _id: { type: mongoose.Schema.Types.ObjectId, auto: true },
           title: String,
           description: String,
           assignedTo: [{ type: mongoose.Schema.Types.ObjectId, ref: "VolunteerUser" }], 
@@ -35,7 +37,7 @@ const associationSchema = new mongoose.Schema({
     }
   ],
   legalDocument: [{ type: String }],
-   specialToken: { type: String, unique: true },
+  specialToken: { type: String, unique: true },
   CIB: { type: String, required: true, unique: true },
   is_valid: { type: Boolean, default: false },
 });
@@ -50,9 +52,8 @@ const volunteerSchema = new mongoose.Schema({
   skills: [{ type: String }],
   qrCode: { type: String },
   location: {
-    city: { type: String },
-    street: { type: String },
-    coordinates: { type: [Number], required: true }, // [longitude, latitude]
+    address: { type: String, required: true,unique:true },
+    coordinates: { type: [Number], required: true }, 
   },
   availability: [{ type: String, enum: ["morning", "afternoon", "evening"] }],
 

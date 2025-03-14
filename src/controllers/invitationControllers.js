@@ -16,6 +16,7 @@ class InvitationControllers {
     await emailServices.sendInvitationnEmail(email,theEmail,result);
     }
     catch(error){
+     
       next(error)
     }
  }
