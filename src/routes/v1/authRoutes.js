@@ -36,6 +36,8 @@ router.post("/assignlocation", verifyToken, verifyAssociation, authcontrollers.h
 
 router.post("/updateneeds", verifyToken, verifyAssociation, authcontrollers.handleUpdateNeeds);
 
+
 router.get("/data",authcontrollers.getVolunteerData)
 router.get("/locationdata",authcontrollers.getLocations)
+router.get("/getlocations",authcontrollers.handleGetLocations)
 module.exports = router;

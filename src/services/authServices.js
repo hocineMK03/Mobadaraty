@@ -404,21 +404,31 @@ if(!association.found){
   }
   
   
-  async getLocations() {
+  async getLocations(forML) {
     try {
-      const associations = await AssociationUser.find().select('locations').exec();
+      let associations
+      if(forML){
+        associations = await AssociationUser.find().select('locations').exec();
+      }
+      else{
+        associations = await AssociationUser.find().exec()
+      }
+      
   
       let locationsList = [];
       for (let association of associations) {
         for (let location of association.locations) {
+
+          console.log(association)
           locationsList.push({
             locationId: location._id,
             
             associationId: association._id,
-            skills: location.skills,
-            requiredVolunteers: location.requiredVolunteers || 0,
-            currentVolunteers: location.assignedVolunteers.length,
+            skills: forML ? location.skills : undefined,
+            requiredVolunteers: forML ? (location.requiredVolunteers || 0) : undefined,
+            currentVolunteers: forML ? location.assignedVolunteers.length : undefined,
             coordinates: location.coordinates,
+            name: forML ? undefined : association.name,
           });
         }
       }

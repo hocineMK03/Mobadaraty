@@ -228,6 +228,16 @@ class AuthControllers {
   }
 
 
+  async handleGetLocations(req, res, next) {
+    try{
+      const result=await authServices.getLocations(false);
+      res.json(result);
+    }
+    catch(error){
+      next(error);
+    }
+  }
+
   /* for ML */
 
   async getVolunteerData(req, res, next) {
@@ -242,7 +252,7 @@ class AuthControllers {
 
   async getLocations(req, res, next) {
     try{
-      const result=await authServices.getLocations();
+      const result=await authServices.getLocations(true);
       res.json(result);
     }
     catch(error){
