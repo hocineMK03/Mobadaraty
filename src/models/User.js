@@ -9,6 +9,7 @@ const userSchema = new mongoose.Schema(
     createdAt: { type: Date, default: Date.now },
   },
   { discriminatorKey: "role", collection: "users" }
+  ,{ autoIndex: false }
 );
 
 const User = mongoose.model("User", userSchema);
@@ -18,8 +19,8 @@ const associationSchema = new mongoose.Schema({
   locations: [
     {
       _id: { type: mongoose.Schema.Types.ObjectId, auto: true },
-      address: { type: String, required: true,unique:true },
-      coordinates: { type: [Number], required: true }, 
+      address: { type: String, required: true,unique:false},
+      coordinates: { type: [Number], required: true,unique:false }, 
      
       requiredVolunteers: { type: Number }, 
       assignedVolunteers: [{ type: mongoose.Schema.Types.ObjectId, ref: "VolunteerUser" }], 
@@ -52,8 +53,8 @@ const volunteerSchema = new mongoose.Schema({
   skills: [{ type: String }],
   qrCode: { type: String },
   location: {
-    address: { type: String, required: true,unique:true },
-    coordinates: { type: [Number], required: true }, 
+    address: { type: String, required: true,index: false,unique:false},
+    coordinates: { type: [Number], required: true ,unique:false}, 
   },
   availability: [{ type: String, enum: ["morning", "afternoon", "evening"] }],
 
@@ -73,11 +74,12 @@ const volunteerSchema = new mongoose.Schema({
 
   assignedLocation: {
     associationId: { type: mongoose.Schema.Types.ObjectId, ref: "AssociationUser" },
-    placeName: { type: String },
+    locationID: { type: mongoose.Schema.Types.ObjectId, ref: "AssociationUser.locations" },
    
   },
 
   points: { type: Number, default: 0 },
+  
 });
 
 // Handle unique constraint errors

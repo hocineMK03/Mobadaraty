@@ -148,7 +148,7 @@ if(!association.found){
       const hashedPassword = await passwordutils.hashPassword(password);
 
       
-      
+      console.log(location)
     
       
       const volunteerUser = new VolunteerUser({
@@ -165,6 +165,8 @@ if(!association.found){
         location
        
       });
+
+      
       const result=await volunteerUser.save();
    
      if(volunteerType==="association_member"){
@@ -177,6 +179,7 @@ if(!association.found){
        await VolunteerUser.findByIdAndUpdate
        (userID,{qrCode:qr})
      }
+    
      
 
       return{fullName:fullName, email:email};
@@ -338,6 +341,29 @@ if(!association.found){
   
       return { success: true, message: "Volunteer assigned successfully!" };
     } catch (error) {
+      if (!error.statusCode) {
+        error.statusCode = 500;
+      }
+      throw error;
+    }
+  }
+
+
+  async getUnassignedVolunteers(){
+    try{
+      const volunteers=await VolunteerUser
+      .find({
+        volunteerType:"independent",
+        assignedLocation:null
+      })
+      .exec();
+
+
+      return volunteers;
+      
+
+    }
+    catch(error){
       if (!error.statusCode) {
         error.statusCode = 500;
       }
