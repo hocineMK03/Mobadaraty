@@ -194,7 +194,7 @@ class AuthControllers {
       await invitationServices.acceptInvite(inviteeEmail, inviterEmail);
     }
     } catch (error) {
-      console.error(error)
+     
       next(error);
     }
   }
@@ -210,6 +210,23 @@ class AuthControllers {
       next(error);
     }
   }
+
+
+
+
+  /* for ML */
+
+  async getVolunteerData(req, res, next) {
+    try{
+      const esult=await authServices.getUnassignedVolunteers();
+      res.json(result);
+    }
+    catch(error){
+      next(error);
+    }
+  }
 }
 
 module.exports = new AuthControllers();
+
+
