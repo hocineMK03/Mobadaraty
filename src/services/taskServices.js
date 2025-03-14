@@ -61,6 +61,13 @@ class TaskServices {
                 error.statusCode = 404;
                 throw error;
             }
+            
+            if(!volunteerResult.data.associationId && !volunteerResult.data.assignedLocation ){
+                const error = new Error("Volunteer not part of the association");
+                error.statusCode = 403;
+                throw error;
+            }
+            
             const volunteer = volunteerResult.data;
 
             // 🔹 Step 3: Check if the volunteer is part of the association
@@ -71,12 +78,14 @@ class TaskServices {
             }
 
             let task = null;
-
+            let locationID=null;
 for (const location of association.locations) {
     task = location.tasks.find(t => t._id.toString() === taskID);
     
     if (task) {  // If task is found, break the loop
         console.log("Found Task:", String(task._id), "=", taskID);
+        locationID=location._id;
+        console.log("Location ID:", locationID);
         break;
     }
 }
@@ -91,6 +100,8 @@ for (const location of association.locations) {
             // 🔹 Step 5: Assign the volunteer to the task
             if (!task.assignedTo.includes(volunteer._id)) {
                 task.assignedTo.push(volunteer._id);
+                //add in the array of assigned volunteers automatically
+                await authServices.assignLocation(volunteerEmail,String(locationID) ,associationEmail)
             } else {
                 console.log("erere")
                const error = new Error("Volunteer already assigned to the task");

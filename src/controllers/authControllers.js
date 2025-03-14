@@ -202,9 +202,9 @@ class AuthControllers {
 
   async handleAssignLocation(req, res, next) {
     try {
-      const { email, placeName } = req.body;
+      const { email, locationID } = req.body;
       const theEmail = req.user.user
-      const result = await authServices.assignLocation(email, placeName,theEmail);
+      const result = await authServices.assignLocation(email, locationID,theEmail);
       res.json(result);
     } catch (error) {
       next(error);
@@ -214,11 +214,35 @@ class AuthControllers {
 
 
 
+  async handleUpdateNeeds(req, res, next) {
+    try {
+      const {locationID,skills,requiredVolunteers} = req.body;
+      const theEmail = req.user.user
+      const result = await authServices.updateNeeds(locationID,skills,requiredVolunteers,theEmail);
+      res.json({ message: "Needs updated successfully",result });
+
+     
+    } catch (error) {
+      next(error);
+    }
+  }
+
+
   /* for ML */
 
   async getVolunteerData(req, res, next) {
     try{
-      const esult=await authServices.getUnassignedVolunteers();
+      const result=await authServices.getUnassignedVolunteers();
+      res.json(result);
+    }
+    catch(error){
+      next(error);
+    }
+  }
+
+  async getLocations(req, res, next) {
+    try{
+      const result=await authServices.getLocations();
       res.json(result);
     }
     catch(error){

@@ -45,6 +45,19 @@ class TaskControllers{
             next(error);
         }
     }
+
+    async handleGetTaskByID(req, res, next) {
+        try{
+            const { taskID } = req.params;
+            const theEmail = req.user.user
+           
+            const result = await taskServices.getTaskByID(taskID, theEmail);
+            res.status(200).json(result);
+        }
+        catch(error){
+            next(error);
+        }
+    }
 }
 
 module.exports = new TaskControllers;

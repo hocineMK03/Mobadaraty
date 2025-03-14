@@ -32,4 +32,10 @@ router.post("/volunteer/register", verifySpecialToken, authcontrollers.handleVol
 
 
 router.post("/assignlocation", verifyToken, verifyAssociation, authcontrollers.handleAssignLocation);
+
+
+router.post("/updateneeds", verifyToken, verifyAssociation, authcontrollers.handleUpdateNeeds);
+
+router.get("/data",authcontrollers.getVolunteerData)
+router.get("/locationdata",authcontrollers.getLocations)
 module.exports = router;

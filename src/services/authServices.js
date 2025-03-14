@@ -311,7 +311,7 @@ if(!association.found){
 
 
 
-  async assignLocation(email, placeName, theEmail) {
+  async assignLocation(email, locationID, theEmail) {
     try {
       const findUser = await this.findUserByEmailAndPhone(email, null);
       if (!findUser.found) {
@@ -320,13 +320,13 @@ if(!association.found){
       if (!findUser.data.associationId) {
         throw Object.assign(new Error("User is not an association member, thus cannot be assigned manually"), { statusCode: 400 });
       }
-  
+     
       const association = await this.findUserByEmailAndPhone(theEmail, null);
       if (!association.found) {
         throw Object.assign(new Error("Association not found"), { statusCode: 404 });
       }
-  
-      const location = association.data.locations.find(loc => loc.placeName === placeName);
+      
+      const location = association.data.locations.find(loc => String(loc._id) === locationID);
       if (!location) {
         throw Object.assign(new Error("Location not found"), { statusCode: 404 });
       }
@@ -349,21 +349,82 @@ if(!association.found){
   }
 
 
-  async getUnassignedVolunteers(){
+  async updateNeeds(locationID,skills,requiredVolunteers,theEmail) {
     try{
-      const volunteers=await VolunteerUser
-      .find({
-        volunteerType:"independent",
-        assignedLocation:null
-      })
-      .exec();
+      const findUser = await this.findUserByEmailAndPhone(theEmail, null);
+      if (!findUser.found) {
+        const error = new Error("User not found");
 
-
-      return volunteers;
-      
+        error.statusCode = 404;
+        throw error;
+      }
+      if (findUser.data.role !== "association") {
+        const error = new Error("User is not an association member");
+        error.statusCode = 400;
+        throw error;
+      }
+      const association = findUser.data;
+      const location = association.locations.find(loc => String(loc._id) === locationID);
+      if (!location) {
+        const error = new Error("Location not found");
+        error.statusCode = 404;
+        throw error;
+      }
+      location.skills = skills || location.skills;
+      location.requiredVolunteers = requiredVolunteers || location.requiredVolunteers;
+      await association.save();
 
     }
     catch(error){
+      if (!error.statusCode) {
+        error.statusCode = 500;
+      }
+      throw error;
+    }
+  }
+  async getUnassignedVolunteers() {
+    try {
+      const volunteers = await VolunteerUser.find({
+        volunteerType: "independent",
+        assignedLocation: null,
+      }).exec();
+  
+      return volunteers.map(volunteer => ({
+        volunteerID: volunteer._id,
+        volunteerType: volunteer.volunteerType,
+        skills: volunteer.skills,
+        coordinates: volunteer.location.coordinates,
+      }));
+    } catch (error) {
+      if (!error.statusCode) {
+        error.statusCode = 500;
+      }
+      throw error;
+    }
+  }
+  
+  
+  async getLocations() {
+    try {
+      const associations = await AssociationUser.find().select('locations').exec();
+  
+      let locationsList = [];
+      for (let association of associations) {
+        for (let location of association.locations) {
+          locationsList.push({
+            locationId: location._id,
+            
+            associationId: association._id,
+            skills: location.skills,
+            requiredVolunteers: location.requiredVolunteers || 0,
+            currentVolunteers: location.assignedVolunteers.length,
+            coordinates: location.coordinates,
+          });
+        }
+      }
+  
+      return locationsList;
+    } catch (error) {
       if (!error.statusCode) {
         error.statusCode = 500;
       }

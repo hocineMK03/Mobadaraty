@@ -71,12 +71,14 @@ const volunteerSchema = new mongoose.Schema({
       return this.volunteerType === "association_member";
     },
   },
-
   assignedLocation: {
-    associationId: { type: mongoose.Schema.Types.ObjectId, ref: "AssociationUser" },
-    locationID: { type: mongoose.Schema.Types.ObjectId, ref: "AssociationUser.locations" },
-   
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "AssociationUser",
+    required: function () {
+      return this.volunteerType === "independent";
+    },
   },
+  
 
   points: { type: Number, default: 0 },
   
