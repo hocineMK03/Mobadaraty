@@ -24,7 +24,12 @@ router.post("/association/register", upload.single("legalDocuments"), async (req
   }
 });
 
+const verifyToken = require("../../middlewares/verifyToken");
+const verifyAssociation = require("../../middlewares/verifyAssociation");
+
 
 router.post("/volunteer/register", verifySpecialToken, authcontrollers.handleVolunteernRegister);
 
+
+router.post("/assignlocation", verifyToken, verifyAssociation, authcontrollers.handleAssignLocation);
 module.exports = router;

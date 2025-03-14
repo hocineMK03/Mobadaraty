@@ -42,19 +42,18 @@ class AuthControllers {
       const { email, password, phone, name, locations, CIB,local_location } = req.body;
       
       
-      const parsedLocations = Array.isArray(locations) ? locations : JSON.parse(locations);
-      const parsedLocalLocation = Array.isArray(local_location) ? local_location : JSON.parse(local_location);
-
+   
+  
       
       const result = await authServices.registerAssociationUser(
         email,
         password,
         phone,
         name,
-        parsedLocations,
+      
         CIB,
         
-        parsedLocalLocation
+        
       );
   
       const token = email;
@@ -65,6 +64,26 @@ class AuthControllers {
       res.cookie("refresh_token", refreshToken, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 });
   
       res.status(201).json({ message: "Association registered successfully" });
+
+
+      let parsedLocations = Array.isArray(locations) ? locations : JSON.parse(locations);
+      /*  const parsedLocalLocation = Array.isArray(local_location) ? local_location : JSON.parse(local_location);
+  */ const parsedLocalLocation =null
+ 
+      // retrive coordinates for each location using antoehr service
+       const {getCoordinates} = require("../utils/getCoordinates");
+       for (let location of parsedLocations) {
+         const coordinates = await getCoordinates(location.address);
+ 
+         
+         location.coordinates = [coordinates.lat, coordinates.lon];
+ 
+ 
+       }
+       //update the association with the locations
+       await authServices.updateAssociationLocations(result.user, parsedLocations);
+
+
       file = req.file;
       
       if (file) {
@@ -89,7 +108,7 @@ class AuthControllers {
         }
       }
 
-      console.log(error)
+     
       next(error);  
     }
   }
@@ -113,20 +132,27 @@ class AuthControllers {
       const invitationServices = require("../services/invitationServices");
       let inviterEmail = null;
       let specialToken1 = null;
-  
-      // 🟢 Only extract invitation data for "association_member"
+      let inviteeEmail = null;
+      
       if (volunteerType === "association_member") {
         const invitationData = req.invitationData;
         inviterEmail = invitationData.inviterEmail;
         specialToken1 = invitationData.specialToken1;
-  
-        // 🟢 Validate invitation
+        inviteeEmail = invitationData.inviteeEmail;
+        
         await invitationServices.checkInvValidity(email, inviterEmail, specialToken1);
       }
 
       if(volunteerType==="association_member"){
         await invitationServices.checkInvValidity(email, inviterEmail, specialToken1);
       }
+      let parsedLocation={};
+      const {getCoordinates} = require("../utils/getCoordinates");
+      const coordinates = await getCoordinates(location.address);
+      parsedLocation.address=location
+      parsedLocation.coordinates = [coordinates.lat, coordinates.lon];
+
+     
       const result=await authServices.registerVolunteerUser(
         email,
         password,
@@ -138,7 +164,7 @@ class AuthControllers {
         availability,
         volunteerType,
         specialToken1,
-        location
+        parsedLocation
       )
 
       
@@ -164,11 +190,23 @@ class AuthControllers {
     if(volunteerType==="association_member"){
       
 
-      
+     
       await invitationServices.acceptInvite(inviteeEmail, inviterEmail);
     }
     } catch (error) {
       console.error(error)
+      next(error);
+    }
+  }
+
+
+  async handleAssignLocation(req, res, next) {
+    try {
+      const { email, placeName } = req.body;
+      const theEmail = req.user.user
+      const result = await authServices.assignLocation(email, placeName,theEmail);
+      res.json(result);
+    } catch (error) {
       next(error);
     }
   }

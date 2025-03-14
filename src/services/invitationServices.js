@@ -37,7 +37,8 @@ async sendInvite(email,theEmail){
             }
             const createInvite= await Invitation.create({
                 email:email,
-                invitedBy:findUser.data._id
+                invitedBy:findUser.data._id,
+                specialToken:findUser.data.specialToken,
             });
 
            if(!createInvite){
@@ -57,6 +58,7 @@ async sendInvite(email,theEmail){
     }
 
     catch(error){
+        console.error(error)
         if (!error.statusCode) {
             error.statusCode = 500;
           }
