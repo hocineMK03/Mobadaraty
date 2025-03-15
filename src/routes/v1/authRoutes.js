@@ -41,4 +41,6 @@ router.get("/data",authcontrollers.getVolunteerData)
 router.get("/dataml",authcontrollers.getDataML)
 router.get("/locationdata",authcontrollers.getLocations)
 router.get("/getlocations",authcontrollers.handleGetLocations)
+
+router.get("/fixlocation",authcontrollers.fixlocation)
 module.exports = router;

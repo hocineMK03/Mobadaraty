@@ -9,6 +9,7 @@ const getCoordinates = async (address) => {
             error.statusCode = 400;
             throw error;
         }
+        
 
         return { lat: data[0].lat, lon: data[0].lon };
     } catch (error) {

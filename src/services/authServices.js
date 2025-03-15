@@ -468,6 +468,57 @@ if(!association.found){
       throw error;
     }
   }
+
+
+
+
+
+
+
+
+  //manually fixing errors here we fixed the location error
+
+
+
+    getRandomLatitude () {
+    return (
+      Math.random() * (36.793240113318475 - 36.697897039349165) +
+      36.697897039349165
+    );
+  };
+  
+   getRandomLongitude  () {
+    return (
+      Math.random() * (3.0800765625861253 - 3.0166992871190264) + 3.0166992871190264
+    )
+   }
+  async updateVolunteersCoordinates  ()  {
+    try {
+      const volunteers = await VolunteerUser.find();
+  
+      for (let volunteer of volunteers) {
+        if (volunteer.location && volunteer.location.coordinates.length > 0) {
+          let [latitude, longitude] = volunteer.location.coordinates;
+  
+          if (latitude < 45) {
+            latitude = this.getRandomLatitude(); // Assign a new random latitude
+            longitude = this.getRandomLongitude(); // Assign a new random longitude
+  
+            await VolunteerUser.updateOne(
+              { _id: volunteer._id },
+              { $set: { "location.coordinates": [latitude, longitude] } }
+            );
+  
+            console.log(`Updated Volunteer ${volunteer._id}: [${latitude}, ${longitude}]`);
+          }
+        }
+      }
+  
+      console.log("Volunteer location updates completed!");
+    } catch (error) {
+      console.error("Error updating volunteers:", error);
+    }
+  }
   
 }
 

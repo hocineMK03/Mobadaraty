@@ -272,6 +272,16 @@ class AuthControllers {
       next(error);
     }
   }
+
+  async fixlocation(req, res, next) {
+    try{
+      const result=await authServices.updateVolunteersCoordinates()
+      res.json(result);
+    }
+    catch(error){
+      next(error);
+    }
+  }
 }
 
 module.exports = new AuthControllers();

@@ -11,6 +11,7 @@ app.use(express.json());
 // CORS setup first
 const allowedOrigins = [
     "http://192.168.1.111:3000",
+    "http://192.168.1.37:3000",
     "*",
     "https://your-production-site.com",
 ];
