@@ -9,12 +9,25 @@ const cors = require('cors');
 const app = express();
 app.use(express.json());
 // CORS setup first
+const allowedOrigins = [
+    "http://192.168.1.111:3000",
+    "*",
+    "https://your-production-site.com",
+];
+
 app.use(cors({
-    origin: "*",
+    origin: function (origin, callback) {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, origin); // Allow request
+        } else {
+            callback(new Error("Not allowed by CORS"));
+        }
+    },
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true,
+    credentials: true, // Required when sending cookies or auth headers
 }));
+
 
 app.options('*', cors()); // Enable pre-flight for all routes
 
