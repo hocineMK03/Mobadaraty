@@ -1,4 +1,4 @@
-const { mongoose } = require("../db/mongoose");
+const { mongoose } = require("../config/db");
 
 const offerSchema = new mongoose.Schema(
   {

@@ -2,7 +2,21 @@ const { User, AssociationUser, VolunteerUser } = require("../models/User");
 
 const passwordutils = require("../utils/passwordUtils");
 class AuthServices {
-  
+  async getUserbyID(userID) {
+    try{
+      const user = await User.findById(userID).exec();
+      if (!user) {
+        return { found: false, data: null };
+      }
+      return { found: true, data: user };
+    }
+    catch (error) {
+      if (!error.statusCode) {
+        error.statusCode = 500;
+      }
+      throw error;
+    }
+  }
   async generateSpecialToken() {
 
   }
