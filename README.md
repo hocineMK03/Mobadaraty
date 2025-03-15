@@ -1,6 +1,3 @@
-# Association and Volunteer Management System
-
-This is a backend system for managing associations and volunteers. It allows associations to manage their locations, assign volunteers to locations, and track tasks. Volunteers can register, join associations, and be assigned tasks based on their skills and availability.
 
 ## Features
 
