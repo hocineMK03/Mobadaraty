@@ -40,6 +40,8 @@ const associationSchema = new mongoose.Schema({
   legalDocument: [{ type: String }],
   specialToken: { type: String, unique: true },
   CIB: { type: String, required: true, unique: true },
+  type: { type: String, enum: ["restaurant", "Non-profit"] },
+  description: { type: String },
   is_valid: { type: Boolean, default: false },
 });
 

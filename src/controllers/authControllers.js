@@ -39,8 +39,7 @@ class AuthControllers {
     let uploadedFile = null;  // Declare a variable to store the uploaded file details
   
     try {
-      const { email, password, phone, name, locations, CIB,local_location } = req.body;
-      
+      const { email, password, phone, name, locations, CIB,local_location ,type,description} = req.body;
       
    
   
@@ -52,7 +51,8 @@ class AuthControllers {
         name,
       
         CIB,
-        
+        type,
+        description
         
       );
   
@@ -94,8 +94,9 @@ class AuthControllers {
   
         // You can use uploadedFile.secure_url or any other response details as needed
         console.log('Uploaded file URL:', uploadedFile.secure_url);
+        await authServices.updateAssociateDocs(result.user, uploadedFile.secure_url);
       }
-      await authServices.updateAssociateDocs(result.user, uploadedFile.secure_url);
+      
 
     } catch (error) {
     
@@ -126,9 +127,9 @@ class AuthControllers {
         skills,
         availability,
         volunteerType,
-        location,
+        location
       } = req.body;
-   
+      
       const invitationServices = require("../services/invitationServices");
       let inviterEmail = null;
       let specialToken1 = null;
@@ -164,7 +165,8 @@ class AuthControllers {
         availability,
         volunteerType,
         specialToken1,
-        parsedLocation
+        parsedLocation,
+       
       )
 
       
@@ -253,6 +255,17 @@ class AuthControllers {
   async getLocations(req, res, next) {
     try{
       const result=await authServices.getLocations(true);
+      res.json(result);
+    }
+    catch(error){
+      next(error);
+    }
+  }
+
+
+  async getDataML(req, res, next) {
+    try{
+      const result=await authServices.dataML()
       res.json(result);
     }
     catch(error){

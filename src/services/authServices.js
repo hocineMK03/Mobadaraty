@@ -119,7 +119,9 @@ class AuthServices {
     availability,
     volunteerType,
     specialToken,
-    location
+    location,
+    type,
+    description
   ) {
     try {
 let association;
@@ -162,7 +164,9 @@ if(!association.found){
         availability,
         volunteerType,
         associationId: association?association.data._id:null,
-        location
+        location,
+        type,
+        description
        
       });
 
@@ -235,7 +239,9 @@ if(!association.found){
     phone,
     name,
     
-    CIB
+    CIB,
+    type,
+    description
     
   ) {
     try {
@@ -260,7 +266,8 @@ if(!association.found){
         name,
         
         CIB,
-        
+        type,
+        description,
         specialToken: randomgenerated
       });
       
@@ -414,28 +421,47 @@ if(!association.found){
         associations = await AssociationUser.find().exec()
       }
       
-  
+      console.log(associations.length)
       let locationsList = [];
       for (let association of associations) {
         for (let location of association.locations) {
 
-          console.log(association)
+         
           locationsList.push({
             locationId: location._id,
             
             associationId: association._id,
-            skills: forML ? location.skills : undefined,
+            skills:location.skills ,
             requiredVolunteers: forML ? (location.requiredVolunteers || 0) : undefined,
             currentVolunteers: forML ? location.assignedVolunteers.length : undefined,
             coordinates: location.coordinates,
             name: forML ? undefined : association.name,
             address: forML ? undefined : location.address,
+            description: forML ? undefined : association.description,
+            type: forML ? undefined : association.type,
           });
         }
       }
   
       return locationsList;
     } catch (error) {
+      if (!error.statusCode) {
+        error.statusCode = 500;
+      }
+      throw error;
+    }
+  }
+
+  async dataML() {
+    //merging volunteer and association data
+    try{
+      let volunteerdData=await this.getUnassignedVolunteers();
+      let locationsData=await this.getLocations(true);
+
+      return {volunteers:volunteerdData,locations:locationsData}
+
+    }
+    catch(error){
       if (!error.statusCode) {
         error.statusCode = 500;
       }

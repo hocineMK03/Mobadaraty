@@ -38,6 +38,7 @@ router.post("/updateneeds", verifyToken, verifyAssociation, authcontrollers.hand
 
 
 router.get("/data",authcontrollers.getVolunteerData)
+router.get("/dataml",authcontrollers.getDataML)
 router.get("/locationdata",authcontrollers.getLocations)
 router.get("/getlocations",authcontrollers.handleGetLocations)
 module.exports = router;

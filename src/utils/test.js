@@ -161,7 +161,7 @@ const volunteers =[
 		]
 	}
 ]
-const locations = [
+const locations =[
 	{
 		"locationId": "67d4057176c5291c11ae680c",
 		"associationId": "67d4056e76c5291c11ae6809",
@@ -175,39 +175,6 @@ const locations = [
 		"coordinates": [
 			36.7014097,
 			3.2293304654793413
-		]
-	},
-	{
-		"locationId": "67d4057176c5291c11ae680d",
-		"associationId": "67d4056e76c5291c11ae6809",
-		"skills": [],
-		"requiredVolunteers": 0,
-		"currentVolunteers": 0,
-		"coordinates": [
-			36.7700535,
-			3.055364365850858
-		]
-	},
-	{
-		"locationId": "67d4057176c5291c11ae680e",
-		"associationId": "67d4056e76c5291c11ae6809",
-		"skills": [],
-		"requiredVolunteers": 0,
-		"currentVolunteers": 0,
-		"coordinates": [
-			36.74853945,
-			3.0759318861461464
-		]
-	},
-	{
-		"locationId": "67d4057176c5291c11ae680f",
-		"associationId": "67d4056e76c5291c11ae6809",
-		"skills": [],
-		"requiredVolunteers": 0,
-		"currentVolunteers": 0,
-		"coordinates": [
-			36.8011287,
-			3.0430556
 		]
 	},
 	{
